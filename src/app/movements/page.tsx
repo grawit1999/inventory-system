@@ -1,12 +1,16 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { supabase, StockMovement } from '@/lib/supabase'
-import { Plus, ArrowDownCircle, ArrowUpCircle, ArrowLeftRight, Trash2 } from 'lucide-react'
+import { Plus, ArrowDownCircle, ArrowUpCircle, ArrowLeftRight, Trash2, X } from 'lucide-react'
 
 export default function MovementsPage() {
   const [movements, setMovements] = useState<StockMovement[]>([])
-  const [filter, setFilter] = useState<'all' | 'in' | 'out'>('all')
+  const [typeFilter, setTypeFilter] = useState<'all' | 'in' | 'out'>('all')
+  const [productFilter, setProductFilter] = useState('')
+  const [requesterFilter, setRequesterFilter] = useState('')
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -26,7 +30,32 @@ export default function MovementsPage() {
     if (!error) setMovements(prev => prev.filter(m => m.id !== id))
   }
 
-  const filtered = filter === 'all' ? movements : movements.filter(m => m.type === filter)
+  function clearFilters() {
+    setTypeFilter('all')
+    setProductFilter('')
+    setRequesterFilter('')
+    setDateFrom('')
+    setDateTo('')
+  }
+
+  const productOptions = useMemo(() =>
+    [...new Set(movements.map(m => m.products?.name).filter(Boolean))].sort()
+  , [movements])
+
+  const requesterOptions = useMemo(() =>
+    [...new Set(movements.map(m => m.requester).filter(Boolean))].sort()
+  , [movements])
+
+  const filtered = useMemo(() => movements.filter(m => {
+    if (typeFilter !== 'all' && m.type !== typeFilter) return false
+    if (productFilter && m.products?.name !== productFilter) return false
+    if (requesterFilter && m.requester !== requesterFilter) return false
+    if (dateFrom && new Date(m.created_at) < new Date(dateFrom)) return false
+    if (dateTo && new Date(m.created_at) > new Date(dateTo + 'T23:59:59')) return false
+    return true
+  }), [movements, typeFilter, productFilter, requesterFilter, dateFrom, dateTo])
+
+  const hasActiveFilter = typeFilter !== 'all' || productFilter || requesterFilter || dateFrom || dateTo
 
   if (loading) return <div className="flex items-center justify-center h-64" style={{ color: 'var(--muted)' }}>กำลังโหลด...</div>
 
@@ -49,21 +78,73 @@ export default function MovementsPage() {
         </Link>
       </div>
 
-      <div className="flex gap-2">
-        {(['all', 'in', 'out'] as const).map(t => (
-          <button
-            key={t}
-            onClick={() => setFilter(t)}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            style={
-              filter === t
-                ? { background: 'var(--primary)', color: '#fff' }
-                : { background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--muted)' }
-            }
+      {/* Filter bar */}
+      <div className="rounded-xl p-4 space-y-3" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+        {/* Type tabs */}
+        <div className="flex gap-2 flex-wrap">
+          {(['all', 'in', 'out'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => setTypeFilter(t)}
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              style={
+                typeFilter === t
+                  ? { background: 'var(--primary)', color: '#fff' }
+                  : { background: 'var(--background)', border: '1px solid var(--border)', color: 'var(--muted)' }
+              }
+            >
+              {t === 'all' ? 'ทั้งหมด' : t === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}
+            </button>
+          ))}
+        </div>
+
+        {/* Dropdown + date filters */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <select
+            value={productFilter}
+            onChange={e => setProductFilter(e.target.value)}
+            className="rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+            style={{ border: '1px solid var(--border)', background: 'var(--background)', color: productFilter ? 'var(--foreground)' : 'var(--muted)' }}
           >
-            {t === 'all' ? 'ทั้งหมด' : t === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}
-          </button>
-        ))}
+            <option value="">ทรัพยากรทั้งหมด</option>
+            {productOptions.map(n => <option key={n} value={n!}>{n}</option>)}
+          </select>
+
+          <select
+            value={requesterFilter}
+            onChange={e => setRequesterFilter(e.target.value)}
+            className="rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+            style={{ border: '1px solid var(--border)', background: 'var(--background)', color: requesterFilter ? 'var(--foreground)' : 'var(--muted)' }}
+          >
+            <option value="">ผู้เบิกทั้งหมด</option>
+            {requesterOptions.map(n => <option key={n} value={n!}>{n}</option>)}
+          </select>
+
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={e => setDateFrom(e.target.value)}
+            className="rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+            style={{ border: '1px solid var(--border)', background: 'var(--background)', color: dateFrom ? 'var(--foreground)' : 'var(--muted)' }}
+          />
+          <input
+            type="date"
+            value={dateTo}
+            onChange={e => setDateTo(e.target.value)}
+            className="rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+            style={{ border: '1px solid var(--border)', background: 'var(--background)', color: dateTo ? 'var(--foreground)' : 'var(--muted)' }}
+          />
+        </div>
+
+        {/* Active filter summary + clear */}
+        <div className="flex items-center justify-between text-xs" style={{ color: 'var(--muted)' }}>
+          <span>แสดง {filtered.length} รายการ</span>
+          {hasActiveFilter && (
+            <button onClick={clearFilters} className="flex items-center gap-1 hover:opacity-70 transition-opacity" style={{ color: 'var(--primary)' }}>
+              <X size={12} /> ล้าง filter
+            </button>
+          )}
+        </div>
       </div>
 
       {filtered.length === 0 ? (
