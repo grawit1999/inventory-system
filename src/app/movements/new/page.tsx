@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
@@ -77,7 +77,7 @@ function NewMovementForm() {
         <Link href="/movements" className="transition-colors" style={{ color: 'var(--muted)' }}>
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>บันทึกรับ/จ่ายสินค้า</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>บันทึกรับ/จ่ายทรัพยากร</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
@@ -100,7 +100,7 @@ function NewMovementForm() {
                 style={form.type !== t ? { borderColor: 'var(--border)', color: 'var(--muted)' } : {}}
               >
                 {t === 'in' ? <ArrowDownCircle size={18} /> : <ArrowUpCircle size={18} />}
-                {t === 'in' ? 'รับสินค้า' : 'จ่ายสินค้า'}
+                {t === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}
               </button>
             ))}
           </div>
@@ -108,7 +108,7 @@ function NewMovementForm() {
 
         {/* Product selector */}
         <div>
-          <label className={labelClass} style={labelStyle}>สินค้า <span className="text-red-500">*</span></label>
+          <label className={labelClass} style={labelStyle}>ทรัพยากร <span className="text-red-500">*</span></label>
           <select
             required
             value={form.product_id}
@@ -116,7 +116,7 @@ function NewMovementForm() {
             className={inputClass}
             style={inputStyle}
           >
-            <option value="">-- เลือกสินค้า --</option>
+            <option value="">-- เลือกทรัพยากร --</option>
             {products.map(p => (
               <option key={p.id} value={p.id}>
                 {p.name} (คงเหลือ: {p.current_stock} {p.unit})
@@ -145,7 +145,7 @@ function NewMovementForm() {
           )}
         </div>
 
-        {/* Requester — แสดงเฉพาะตอนจ่ายสินค้า */}
+        {/* Requester — แสดงเฉพาะตอนจ่ายทรัพยากร */}
         {form.type === 'out' && (
           <div>
             <label className={labelClass} style={labelStyle}>ผู้เบิก</label>
@@ -193,7 +193,7 @@ function NewMovementForm() {
               form.type === 'in' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
             }`}
           >
-            {saving ? 'กำลังบันทึก...' : form.type === 'in' ? 'บันทึกรับสินค้า' : 'บันทึกจ่ายสินค้า'}
+            {saving ? 'กำลังบันทึก...' : form.type === 'in' ? 'บันทึกรับทรัพยากร' : 'บันทึกจ่ายทรัพยากร'}
           </button>
           <Link href="/movements"
             className="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors text-center"

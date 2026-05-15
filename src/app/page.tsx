@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase, Product, StockMovement } from '@/lib/supabase'
@@ -32,8 +32,8 @@ export default function DashboardPage() {
   const totalValue = products.reduce((sum, p) => sum + p.current_stock * p.price, 0)
 
   const stats = [
-    { label: 'สินค้าทั้งหมด', value: totalProducts, icon: Package, text: 'text-red-600', bg: 'bg-red-50', isPrimary: true },
-    { label: 'สินค้าหมด', value: outOfStock, icon: AlertTriangle, text: 'text-red-600', bg: 'bg-red-50', isPrimary: false },
+    { label: 'ทรัพยากรทั้งหมด', value: totalProducts, icon: Package, text: 'text-red-600', bg: 'bg-red-50', isPrimary: true },
+    { label: 'ทรัพยากรหมด', value: outOfStock, icon: AlertTriangle, text: 'text-red-600', bg: 'bg-red-50', isPrimary: false },
     { label: 'ใกล้หมด', value: lowStock, icon: AlertTriangle, text: 'text-yellow-600', bg: 'bg-yellow-50', isPrimary: false },
     { label: 'มูลค่าคงคลัง', value: `฿${totalValue.toLocaleString()}`, icon: TrendingUp, text: 'text-green-600', bg: 'bg-green-50', isPrimary: false },
   ]
@@ -43,8 +43,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>ภาพรวมคลังสินค้า</h1>
-        <p className="mt-1" style={{ color: 'var(--muted)' }}>สรุปสถานะสินค้าคงคลัง</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>ภาพรวมคลังทรัพยากร</h1>
+        <p className="mt-1" style={{ color: 'var(--muted)' }}>สรุปสถานะทรัพยากรคงคลัง</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -63,10 +63,10 @@ export default function DashboardPage() {
         <div className="rounded-xl border p-5" style={{ background: 'var(--card)', borderColor: 'var(--border)' }}>
           <h2 className="font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--primary)' }}>
             <AlertTriangle size={18} className="text-yellow-500" />
-            สินค้าที่ต้องเติม
+            ทรัพยากรที่ต้องเติม
           </h2>
           {products.filter(p => p.current_stock <= p.min_stock).length === 0 ? (
-            <p className="text-sm" style={{ color: 'var(--muted)' }}>ไม่มีสินค้าที่ต้องเติม</p>
+            <p className="text-sm" style={{ color: 'var(--muted)' }}>ไม่มีทรัพยากรที่ต้องเติม</p>
           ) : (
             <div className="space-y-2">
               {products
@@ -94,7 +94,7 @@ export default function DashboardPage() {
             การเคลื่อนไหวล่าสุด
           </h2>
           {recentMovements.length === 0 ? (
-            <p className="text-sm" style={{ color: 'var(--muted)' }}>ยังไม่มีการรับ/จ่ายสินค้า</p>
+            <p className="text-sm" style={{ color: 'var(--muted)' }}>ยังไม่มีการรับ/จ่ายทรัพยากร</p>
           ) : (
             <div className="space-y-2">
               {recentMovements.map(m => (

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase, Product } from '@/lib/supabase'
@@ -32,7 +32,7 @@ export default function ProductsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>สินค้าทั้งหมด</h1>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>ทรัพยากรทั้งหมด</h1>
           <p className="mt-1" style={{ color: 'var(--muted)' }}>{products.length} รายการ</p>
         </div>
         <Link
@@ -43,7 +43,7 @@ export default function ProductsPage() {
           onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
         >
           <Plus size={16} />
-          เพิ่มสินค้า
+          เพิ่มทรัพยากร
         </Link>
       </div>
 
@@ -51,7 +51,7 @@ export default function ProductsPage() {
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted)' }} />
         <input
           type="text"
-          placeholder="ค้นหาชื่อสินค้า หรือ SKU..."
+          placeholder="ค้นหาชื่อทรัพยากร หรือ SKU..."
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="w-full pl-9 pr-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
@@ -62,14 +62,14 @@ export default function ProductsPage() {
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 gap-3" style={{ color: 'var(--muted)' }}>
           <Package size={40} />
-          <p>ไม่พบสินค้า</p>
+          <p>ไม่พบทรัพยากร</p>
         </div>
       ) : (
         <div className="rounded-xl overflow-hidden" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
           <table className="w-full text-sm">
             <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
               <tr>
-                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>สินค้า</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ทรัพยากร</th>
                 <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมวดหมู่</th>
                 <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>คงเหลือ</th>
                 <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ราคา</th>

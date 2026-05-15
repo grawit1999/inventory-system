@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, Category } from '@/lib/supabase'
@@ -55,22 +55,22 @@ export default function NewProductPage() {
         <Link href="/products" className="transition-colors" style={{ color: 'var(--muted)' }}>
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>เพิ่มสินค้าใหม่</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>เพิ่มทรัพยากรใหม่</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className={labelClass} style={labelStyle}>ชื่อสินค้า <span className="text-red-500">*</span></label>
+            <label className={labelClass} style={labelStyle}>ชื่อทรัพยากร <span className="text-red-500">*</span></label>
             <input required value={form.name} onChange={e => set('name', e.target.value)}
               className={inputClass} style={inputStyle}
-              placeholder="ชื่อสินค้า" />
+              placeholder="ชื่อทรัพยากร" />
           </div>
           <div>
             <label className={labelClass} style={labelStyle}>SKU</label>
             <input value={form.sku} onChange={e => set('sku', e.target.value)}
               className={inputClass} style={inputStyle}
-              placeholder="รหัสสินค้า (ถ้ามี)" />
+              placeholder="รหัสทรัพยากร (ถ้ามี)" />
           </div>
           <div>
             <label className={labelClass} style={labelStyle}>หน่วย <span className="text-red-500">*</span></label>
@@ -117,7 +117,7 @@ export default function NewProductPage() {
             style={{ background: saving ? 'var(--muted)' : 'var(--primary)' }}
             onMouseOver={e => { if (!saving) e.currentTarget.style.background = 'var(--primary-hover)' }}
             onMouseOut={e => { if (!saving) e.currentTarget.style.background = 'var(--primary)' }}>
-            {saving ? 'กำลังบันทึก...' : 'บันทึกสินค้า'}
+            {saving ? 'กำลังบันทึก...' : 'บันทึกทรัพยากร'}
           </button>
           <Link href="/products"
             className="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors text-center"

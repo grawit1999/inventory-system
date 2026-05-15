@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase, StockMovement } from '@/lib/supabase'
@@ -28,8 +28,8 @@ export default function MovementsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>รับ/จ่ายสินค้า</h1>
-          <p className="mt-1" style={{ color: 'var(--muted)' }}>ประวัติการเคลื่อนไหวสินค้าทั้งหมด</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>รับ/จ่ายทรัพยากร</h1>
+          <p className="mt-1" style={{ color: 'var(--muted)' }}>ประวัติการเคลื่อนไหวทรัพยากรทั้งหมด</p>
         </div>
         <Link
           href="/movements/new"
@@ -55,7 +55,7 @@ export default function MovementsPage() {
                 : { background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--muted)' }
             }
           >
-            {t === 'all' ? 'ทั้งหมด' : t === 'in' ? 'รับสินค้า' : 'จ่ายสินค้า'}
+            {t === 'all' ? 'ทั้งหมด' : t === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}
           </button>
         ))}
       </div>
@@ -71,7 +71,7 @@ export default function MovementsPage() {
             <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
               <tr>
                 <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ประเภท</th>
-                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>สินค้า</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ทรัพยากร</th>
                 <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>จำนวน</th>
                 <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ผู้เบิก</th>
                 <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมายเหตุ</th>
@@ -91,7 +91,7 @@ export default function MovementsPage() {
                         <ArrowUpCircle size={16} className="text-red-500" />
                       )}
                       <span className={`font-medium ${m.type === 'in' ? 'text-green-700' : 'text-red-700'}`}>
-                        {m.type === 'in' ? 'รับสินค้า' : 'จ่ายสินค้า'}
+                        {m.type === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}
                       </span>
                     </div>
                   </td>

@@ -27,13 +27,13 @@ export default function ProductDetailPage() {
   }, [id])
 
   async function handleDelete() {
-    if (!confirm('ต้องการลบสินค้านี้?')) return
+    if (!confirm('ต้องการลบทรัพยากรนี้?')) return
     await supabase.from('products').delete().eq('id', id)
     router.push('/products')
   }
 
   if (loading) return <div className="flex items-center justify-center h-64" style={{ color: 'var(--muted)' }}>กำลังโหลด...</div>
-  if (!product) return <div className="text-center py-16" style={{ color: 'var(--muted)' }}>ไม่พบสินค้า</div>
+  if (!product) return <div className="text-center py-16" style={{ color: 'var(--muted)' }}>ไม่พบทรัพยากร</div>
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -59,7 +59,7 @@ export default function ProductDetailPage() {
 
       <div className="grid md:grid-cols-2 gap-4">
         <div className="rounded-xl p-5 space-y-4" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-          <h2 className="font-semibold" style={{ color: 'var(--primary)' }}>ข้อมูลสินค้า</h2>
+          <h2 className="font-semibold" style={{ color: 'var(--primary)' }}>ข้อมูลทรัพยากร</h2>
           <dl className="space-y-3 text-sm">
             {[
               ['SKU', product.sku ?? '-'],
@@ -93,7 +93,7 @@ export default function ProductDetailPage() {
             onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
             onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
           >
-            บันทึกรับ/จ่ายสินค้า
+            บันทึกรับ/จ่ายทรัพยากร
           </Link>
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function ProductDetailPage() {
                     <ArrowUpCircle size={18} className="text-red-500 shrink-0" />
                   )}
                   <div>
-                    <p className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>{m.type === 'in' ? 'รับสินค้า' : 'จ่ายสินค้า'}</p>
+                    <p className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>{m.type === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}</p>
                     <p className="text-xs" style={{ color: 'var(--muted)' }}>{new Date(m.created_at).toLocaleString('th-TH')}</p>
                     {m.note && <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{m.note}</p>}
                   </div>

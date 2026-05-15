@@ -71,13 +71,13 @@ export default function EditProductPage() {
         <Link href={`/products/${id}`} className="transition-colors" style={{ color: 'var(--muted)' }}>
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>แก้ไขสินค้า</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>แก้ไขทรัพยากร</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className={labelClass} style={labelStyle}>ชื่อสินค้า <span className="text-red-500">*</span></label>
+            <label className={labelClass} style={labelStyle}>ชื่อทรัพยากร <span className="text-red-500">*</span></label>
             <input required value={form.name} onChange={e => set('name', e.target.value)}
               className={inputClass} style={inputStyle} />
           </div>

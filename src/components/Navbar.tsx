@@ -1,12 +1,12 @@
-'use client'
+﻿'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Package, ArrowLeftRight, LayoutDashboard } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: 'ภาพรวม', icon: LayoutDashboard },
-  { href: '/products', label: 'สินค้า', icon: Package },
-  { href: '/movements', label: 'รับ/จ่ายสินค้า', icon: ArrowLeftRight },
+  { href: '/products', label: 'ทรัพยากร', icon: Package },
+  { href: '/movements', label: 'รับ/จ่ายทรัพยากร', icon: ArrowLeftRight },
 ]
 
 export default function Navbar() {
@@ -18,7 +18,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
             <Package style={{ color: 'var(--primary)' }} size={24} />
-            <span className="font-bold text-lg" style={{ color: 'var(--primary)' }}>คลังสินค้า</span>
+            <span className="font-bold text-lg" style={{ color: 'var(--primary)' }}>คลังทรัพยากร</span>
           </div>
           <div className="flex items-center gap-1">
             {navItems.map(({ href, label, icon: Icon }) => {
