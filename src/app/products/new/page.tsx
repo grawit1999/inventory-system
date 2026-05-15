@@ -1,28 +1,20 @@
-﻿'use client'
-import { useEffect, useState } from 'react'
+'use client'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase, Category } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 export default function NewProductPage() {
   const router = useRouter()
-  const [categories, setCategories] = useState<Category[]>([])
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({
     name: '',
-    sku: '',
-    category_id: '',
     unit: 'ชิ้น',
-    price: '',
     current_stock: '0',
     min_stock: '0',
     description: '',
   })
-
-  useEffect(() => {
-    supabase.from('categories').select('*').order('name').then(({ data }) => setCategories(data ?? []))
-  }, [])
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 
@@ -31,10 +23,7 @@ export default function NewProductPage() {
     setSaving(true)
     const { error } = await supabase.from('products').insert({
       name: form.name.trim(),
-      sku: form.sku.trim() || null,
-      category_id: form.category_id || null,
       unit: form.unit.trim(),
-      price: parseFloat(form.price) || 0,
       current_stock: parseInt(form.current_stock) || 0,
       min_stock: parseInt(form.min_stock) || 0,
       description: form.description.trim() || null,
@@ -67,30 +56,10 @@ export default function NewProductPage() {
               placeholder="ชื่อทรัพยากร" />
           </div>
           <div>
-            <label className={labelClass} style={labelStyle}>SKU</label>
-            <input value={form.sku} onChange={e => set('sku', e.target.value)}
-              className={inputClass} style={inputStyle}
-              placeholder="รหัสทรัพยากร (ถ้ามี)" />
-          </div>
-          <div>
             <label className={labelClass} style={labelStyle}>หน่วย <span className="text-red-500">*</span></label>
             <input required value={form.unit} onChange={e => set('unit', e.target.value)}
               className={inputClass} style={inputStyle}
               placeholder="ชิ้น / กล่อง / กก." />
-          </div>
-          <div>
-            <label className={labelClass} style={labelStyle}>หมวดหมู่</label>
-            <select value={form.category_id} onChange={e => set('category_id', e.target.value)}
-              className={inputClass} style={inputStyle}>
-              <option value="">-- ไม่ระบุ --</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className={labelClass} style={labelStyle}>ราคาต่อหน่วย (฿)</label>
-            <input type="number" min="0" step="0.01" value={form.price} onChange={e => set('price', e.target.value)}
-              className={inputClass} style={inputStyle}
-              placeholder="0.00" />
           </div>
           <div>
             <label className={labelClass} style={labelStyle}>จำนวนเริ่มต้น</label>

@@ -1,42 +1,29 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { supabase, Category, Product } from '@/lib/supabase'
+import { supabase, Product } from '@/lib/supabase'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
-  const [categories, setCategories] = useState<Category[]>([])
   const [saving, setSaving] = useState(false)
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState({
-    name: '', sku: '', category_id: '', unit: '', price: '',
-    min_stock: '', description: '',
+    name: '', unit: '', min_stock: '', description: '',
   })
 
   useEffect(() => {
-    async function load() {
-      const [{ data: prod }, { data: cats }] = await Promise.all([
-        supabase.from('products').select('*').eq('id', id).single<Product>(),
-        supabase.from('categories').select('*').order('name'),
-      ])
-      if (prod) {
-        setForm({
-          name: prod.name,
-          sku: prod.sku ?? '',
-          category_id: prod.category_id ?? '',
-          unit: prod.unit,
-          price: prod.price.toString(),
-          min_stock: prod.min_stock.toString(),
-          description: prod.description ?? '',
-        })
-      }
-      setCategories(cats ?? [])
+    supabase.from('products').select('*').eq('id', id).single<Product>().then(({ data: prod }) => {
+      if (prod) setForm({
+        name: prod.name,
+        unit: prod.unit,
+        min_stock: prod.min_stock.toString(),
+        description: prod.description ?? '',
+      })
       setLoading(false)
-    }
-    load()
+    })
   }, [id])
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
@@ -46,10 +33,7 @@ export default function EditProductPage() {
     setSaving(true)
     const { error } = await supabase.from('products').update({
       name: form.name.trim(),
-      sku: form.sku.trim() || null,
-      category_id: form.category_id || null,
       unit: form.unit.trim(),
-      price: parseFloat(form.price) || 0,
       min_stock: parseInt(form.min_stock) || 0,
       description: form.description.trim() || null,
     }).eq('id', id)
@@ -82,26 +66,8 @@ export default function EditProductPage() {
               className={inputClass} style={inputStyle} />
           </div>
           <div>
-            <label className={labelClass} style={labelStyle}>SKU</label>
-            <input value={form.sku} onChange={e => set('sku', e.target.value)}
-              className={inputClass} style={inputStyle} />
-          </div>
-          <div>
             <label className={labelClass} style={labelStyle}>หน่วย <span className="text-red-500">*</span></label>
             <input required value={form.unit} onChange={e => set('unit', e.target.value)}
-              className={inputClass} style={inputStyle} />
-          </div>
-          <div>
-            <label className={labelClass} style={labelStyle}>หมวดหมู่</label>
-            <select value={form.category_id} onChange={e => set('category_id', e.target.value)}
-              className={inputClass} style={inputStyle}>
-              <option value="">-- ไม่ระบุ --</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className={labelClass} style={labelStyle}>ราคาต่อหน่วย (฿)</label>
-            <input type="number" min="0" step="0.01" value={form.price} onChange={e => set('price', e.target.value)}
               className={inputClass} style={inputStyle} />
           </div>
           <div>
