@@ -93,9 +93,7 @@ export default function ProductsPage() {
               <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
                 <tr>
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ทรัพยากร</th>
-                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมวดหมู่</th>
                   <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>คงเหลือ</th>
-                  <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ราคา</th>
                   <th className="text-center px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>สถานะ</th>
                   <th className="px-4 py-3"></th>
                 </tr>
@@ -107,14 +105,9 @@ export default function ProductsPage() {
                     onMouseOut={e => (e.currentTarget.style.background = '')}>
                     <td className="px-4 py-3">
                       <div className="font-medium" style={{ color: 'var(--foreground)' }}>{p.name}</div>
-                      {p.sku && <div className="text-xs" style={{ color: 'var(--muted)' }}>SKU: {p.sku}</div>}
                     </td>
-                    <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{p.categories?.name ?? '-'}</td>
                     <td className="px-4 py-3 text-right font-medium" style={{ color: 'var(--foreground)' }}>
                       {p.current_stock} {p.unit}
-                    </td>
-                    <td className="px-4 py-3 text-right" style={{ color: 'var(--muted)' }}>
-                      {p.price > 0 ? `฿${p.price.toLocaleString()}` : '-'}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <StockBadge current={p.current_stock} min={p.min_stock} />
