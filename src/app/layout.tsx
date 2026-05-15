@@ -8,6 +8,7 @@ const geist = Geist({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'คลัง JOMZON',
   description: 'Inventory Management System',
+  icons: { icon: '/Logo_JZ.png' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
