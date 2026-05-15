@@ -1,5 +1,6 @@
 ﻿'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Package, ArrowLeftRight, LayoutDashboard } from 'lucide-react'
 
@@ -19,10 +20,10 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 md:h-16">
             {/* Brand */}
-            <div className="flex items-center gap-2">
-              <Package style={{ color: 'var(--primary)' }} size={22} />
-              <span className="font-bold text-base md:text-lg" style={{ color: 'var(--primary)' }}>คลังทรัพยากร</span>
-            </div>
+            <Link href="/" className="flex items-center gap-2">
+              <Image src="/Logo_JZ.png" alt="JOMZON Logo" width={40} height={40} className="rounded-lg object-contain" />
+              <span className="font-bold text-base md:text-lg" style={{ color: 'var(--primary)' }}>คลัง JOMZON</span>
+            </Link>
             {/* Desktop nav links — hidden on mobile */}
             <div className="hidden md:flex items-center gap-1">
               {navItems.map(({ href, label, icon: Icon }) => {

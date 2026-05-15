@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar'
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ระบบจัดการคลังทรัพยากร',
+  title: 'คลัง JOMZON',
   description: 'Inventory Management System',
 }
 
