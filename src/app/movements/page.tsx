@@ -2,7 +2,10 @@
 import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { supabase, StockMovement } from '@/lib/supabase'
-import { Plus, ArrowDownCircle, ArrowUpCircle, ArrowLeftRight, Trash2, X } from 'lucide-react'
+import { Plus, ArrowDownCircle, ArrowUpCircle, ArrowLeftRight, Trash2, X, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react'
+
+type SortKey = 'product' | 'quantity' | 'created_at'
+type SortDir = 'asc' | 'desc'
 
 export default function MovementsPage() {
   const [movements, setMovements] = useState<StockMovement[]>([])
@@ -11,6 +14,8 @@ export default function MovementsPage() {
   const [requesterFilter, setRequesterFilter] = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
+  const [sortKey, setSortKey] = useState<SortKey>('created_at')
+  const [sortDir, setSortDir] = useState<SortDir>('desc')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -30,6 +35,16 @@ export default function MovementsPage() {
     if (!error) setMovements(prev => prev.filter(m => m.id !== id))
   }
 
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc')
+    else { setSortKey(key); setSortDir(key === 'created_at' ? 'desc' : 'asc') }
+  }
+
+  function SortIcon({ col }: { col: SortKey }) {
+    if (sortKey !== col) return <ArrowUpDown size={13} className="opacity-40" />
+    return sortDir === 'asc' ? <ChevronUp size={13} /> : <ChevronDown size={13} />
+  }
+
   function clearFilters() {
     setTypeFilter('all')
     setProductFilter('')
@@ -46,14 +61,22 @@ export default function MovementsPage() {
     [...new Set(movements.map(m => m.requester).filter(Boolean))].sort()
   , [movements])
 
-  const filtered = useMemo(() => movements.filter(m => {
-    if (typeFilter !== 'all' && m.type !== typeFilter) return false
-    if (productFilter && m.products?.name !== productFilter) return false
-    if (requesterFilter && m.requester !== requesterFilter) return false
-    if (dateFrom && new Date(m.created_at) < new Date(dateFrom)) return false
-    if (dateTo && new Date(m.created_at) > new Date(dateTo + 'T23:59:59')) return false
-    return true
-  }), [movements, typeFilter, productFilter, requesterFilter, dateFrom, dateTo])
+  const filtered = useMemo(() => {
+    const list = movements.filter(m => {
+      if (typeFilter !== 'all' && m.type !== typeFilter) return false
+      if (productFilter && m.products?.name !== productFilter) return false
+      if (requesterFilter && m.requester !== requesterFilter) return false
+      if (dateFrom && new Date(m.created_at) < new Date(dateFrom)) return false
+      if (dateTo && new Date(m.created_at) > new Date(dateTo + 'T23:59:59')) return false
+      return true
+    })
+    const mul = sortDir === 'asc' ? 1 : -1
+    return [...list].sort((a, b) => {
+      if (sortKey === 'product') return mul * (a.products?.name ?? '').localeCompare(b.products?.name ?? '', 'th')
+      if (sortKey === 'quantity') return mul * (a.quantity - b.quantity)
+      return mul * (new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    })
+  }, [movements, typeFilter, productFilter, requesterFilter, dateFrom, dateTo, sortKey, sortDir])
 
   const hasActiveFilter = typeFilter !== 'all' || productFilter || requesterFilter || dateFrom || dateTo
 
@@ -198,11 +221,23 @@ export default function MovementsPage() {
               <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
                 <tr>
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ประเภท</th>
-                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ทรัพยากร</th>
-                  <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>จำนวน</th>
+                  <th className="text-left px-4 py-3">
+                    <button onClick={() => toggleSort('product')} className="flex items-center gap-1.5 font-medium hover:opacity-70 transition-opacity" style={{ color: 'var(--muted)' }}>
+                      ทรัพยากร <SortIcon col="product" />
+                    </button>
+                  </th>
+                  <th className="text-right px-4 py-3">
+                    <button onClick={() => toggleSort('quantity')} className="flex items-center gap-1.5 font-medium hover:opacity-70 transition-opacity ml-auto" style={{ color: 'var(--muted)' }}>
+                      จำนวน <SortIcon col="quantity" />
+                    </button>
+                  </th>
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ผู้เบิก</th>
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมายเหตุ</th>
-                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>วันที่/เวลา</th>
+                  <th className="text-left px-4 py-3">
+                    <button onClick={() => toggleSort('created_at')} className="flex items-center gap-1.5 font-medium hover:opacity-70 transition-opacity" style={{ color: 'var(--muted)' }}>
+                      วันที่/เวลา <SortIcon col="created_at" />
+                    </button>
+                  </th>
                   <th className="px-4 py-3"></th>
                 </tr>
               </thead>
