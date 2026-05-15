@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { supabase, StockMovement } from '@/lib/supabase'
-import { Plus, ArrowDownCircle, ArrowUpCircle, ArrowLeftRight } from 'lucide-react'
+import { Plus, ArrowDownCircle, ArrowUpCircle, ArrowLeftRight, Trash2 } from 'lucide-react'
 
 export default function MovementsPage() {
   const [movements, setMovements] = useState<StockMovement[]>([])
@@ -19,6 +19,12 @@ export default function MovementsPage() {
         setLoading(false)
       })
   }, [])
+
+  async function handleDelete(id: string) {
+    if (!confirm('ต้องการลบรายการนี้?')) return
+    const { error } = await supabase.from('stock_movements').delete().eq('id', id)
+    if (!error) setMovements(prev => prev.filter(m => m.id !== id))
+  }
 
   const filtered = filter === 'all' ? movements : movements.filter(m => m.type === filter)
 
@@ -67,14 +73,10 @@ export default function MovementsPage() {
         </div>
       ) : (
         <>
-          {/* Mobile card list — visible below md */}
+          {/* Mobile card list */}
           <div className="md:hidden space-y-3">
             {filtered.map(m => (
-              <div
-                key={m.id}
-                className="p-4 rounded-xl"
-                style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
-              >
+              <div key={m.id} className="p-4 rounded-xl" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
                     {m.type === 'in' ? (
@@ -83,11 +85,7 @@ export default function MovementsPage() {
                       <ArrowUpCircle size={18} className="text-red-500 shrink-0" />
                     )}
                     <div className="min-w-0">
-                      <Link
-                        href={`/products/${m.product_id}`}
-                        className="font-medium text-sm truncate block"
-                        style={{ color: 'var(--primary)' }}
-                      >
+                      <Link href={`/products/${m.product_id}`} className="font-medium text-sm truncate block" style={{ color: 'var(--primary)' }}>
                         {m.products?.name}
                       </Link>
                       <span className={`text-xs font-medium ${m.type === 'in' ? 'text-green-700' : 'text-red-700'}`}>
@@ -95,9 +93,14 @@ export default function MovementsPage() {
                       </span>
                     </div>
                   </div>
-                  <span className={`text-sm font-bold shrink-0 ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
-                    {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
-                  </span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`text-sm font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
+                      {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
+                    </span>
+                    <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: 'var(--muted)' }}>
                   {m.requester && <span>ผู้เบิก: {m.requester}</span>}
@@ -108,7 +111,7 @@ export default function MovementsPage() {
             ))}
           </div>
 
-          {/* Desktop table — visible from md up */}
+          {/* Desktop table */}
           <div className="hidden md:block rounded-xl overflow-x-auto" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
             <table className="w-full text-sm">
               <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
@@ -119,6 +122,7 @@ export default function MovementsPage() {
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ผู้เบิก</th>
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมายเหตุ</th>
                   <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>วันที่/เวลา</th>
+                  <th className="px-4 py-3"></th>
                 </tr>
               </thead>
               <tbody>
@@ -150,6 +154,11 @@ export default function MovementsPage() {
                     <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{m.note ?? '-'}</td>
                     <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--muted)' }}>
                       {new Date(m.created_at).toLocaleString('th-TH')}
+                    </td>
+                    <td className="px-4 py-3">
+                      <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Trash2 size={15} />
+                      </button>
                     </td>
                   </tr>
                 ))}
