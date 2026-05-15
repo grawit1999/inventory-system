@@ -67,6 +67,7 @@ export default function MovementsPage() {
                 <th className="text-left px-4 py-3 font-medium text-gray-600">ประเภท</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">สินค้า</th>
                 <th className="text-right px-4 py-3 font-medium text-gray-600">จำนวน</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">ผู้เบิก</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">หมายเหตุ</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">วันที่/เวลา</th>
               </tr>
@@ -94,6 +95,7 @@ export default function MovementsPage() {
                   <td className={`px-4 py-3 text-right font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
                     {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
                   </td>
+                  <td className="px-4 py-3 text-gray-700">{m.requester ?? '-'}</td>
                   <td className="px-4 py-3 text-gray-500">{m.note ?? '-'}</td>
                   <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
                     {new Date(m.created_at).toLocaleString('th-TH')}

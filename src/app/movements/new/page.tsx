@@ -2,7 +2,7 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { supabase, Product } from '@/lib/supabase'
+import { supabase, Product, Member } from '@/lib/supabase'
 import { ArrowLeft, ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
 
 function NewMovementForm() {
@@ -11,6 +11,7 @@ function NewMovementForm() {
   const preselectedProduct = searchParams.get('product') ?? ''
 
   const [products, setProducts] = useState<Product[]>([])
+  const [members, setMembers] = useState<Member[]>([])
   const [saving, setSaving] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [form, setForm] = useState({
@@ -18,14 +19,19 @@ function NewMovementForm() {
     type: 'in' as 'in' | 'out',
     quantity: '',
     note: '',
+    requester: '',
   })
 
   useEffect(() => {
-    supabase.from('products').select('*').order('name').then(({ data }) => {
-      const prods = data ?? []
-      setProducts(prods)
+    Promise.all([
+      supabase.from('products').select('*').order('name'),
+      supabase.from('members').select('*').order('name'),
+    ]).then(([{ data: prods }, { data: mems }]) => {
+      const prodList = prods ?? []
+      setProducts(prodList)
+      setMembers(mems ?? [])
       if (preselectedProduct) {
-        setSelectedProduct(prods.find(p => p.id === preselectedProduct) ?? null)
+        setSelectedProduct(prodList.find(p => p.id === preselectedProduct) ?? null)
       }
     })
   }, [preselectedProduct])
@@ -53,6 +59,7 @@ function NewMovementForm() {
       type: form.type,
       quantity: qty,
       note: form.note.trim() || null,
+      requester: form.type === 'out' ? (form.requester.trim() || null) : null,
     })
     setSaving(false)
     if (!error) router.push('/movements')
@@ -65,7 +72,7 @@ function NewMovementForm() {
         <Link href="/movements" className="text-gray-400 hover:text-gray-600 transition-colors">
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="text-2xl font-bold text-blue-600/100 dark:text-sky-400/100">บันทึกรับ/จ่ายสินค้า</h1>
+        <h1 className="text-2xl font-bold text-gray-900">บันทึกรับ/จ่ายสินค้า</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
@@ -129,6 +136,32 @@ function NewMovementForm() {
             <p className="text-xs text-gray-400 mt-1">คงเหลือ: {selectedProduct.current_stock} {selectedProduct.unit}</p>
           )}
         </div>
+
+        {/* Requester — แสดงเฉพาะตอนจ่ายสินค้า */}
+        {form.type === 'out' && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">ผู้เบิก</label>
+            {members.length > 0 ? (
+              <select
+                value={form.requester}
+                onChange={e => set('requester', e.target.value)}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              >
+                <option value="">-- เลือกผู้เบิก --</option>
+                {members.map(m => (
+                  <option key={m.id} value={m.name}>{m.name} ({m.role})</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                value={form.requester}
+                onChange={e => set('requester', e.target.value)}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="ชื่อผู้เบิก"
+              />
+            )}
+          </div>
+        )}
 
         {/* Note */}
         <div>

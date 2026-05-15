@@ -37,6 +37,14 @@ export type StockMovement = {
   type: 'in' | 'out'
   quantity: number
   note: string | null
+  requester: string | null
   created_at: string
   products?: Product
+}
+
+export type Member = {
+  id: string
+  name: string
+  role: string
+  created_at: string
 }
