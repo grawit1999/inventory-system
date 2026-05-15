@@ -58,7 +58,7 @@ export default function EditProductPage() {
         <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>แก้ไขทรัพยากร</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+      <form onSubmit={handleSubmit} className="rounded-xl p-4 sm:p-6 space-y-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
             <label className={labelClass} style={labelStyle}>ชื่อทรัพยากร <span className="text-red-500">*</span></label>
@@ -82,16 +82,16 @@ export default function EditProductPage() {
           </div>
         </div>
 
-        <div className="flex gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button type="submit" disabled={saving}
-            className="flex-1 text-white py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            className="flex-1 text-white py-3 sm:py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             style={{ background: saving ? 'var(--muted)' : 'var(--primary)' }}
             onMouseOver={e => { if (!saving) e.currentTarget.style.background = 'var(--primary-hover)' }}
             onMouseOut={e => { if (!saving) e.currentTarget.style.background = 'var(--primary)' }}>
             {saving ? 'กำลังบันทึก...' : 'บันทึกการแก้ไข'}
           </button>
           <Link href={`/products/${id}`}
-            className="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors text-center"
+            className="sm:px-6 py-3 sm:py-2.5 rounded-lg text-sm font-medium transition-colors text-center"
             style={{ border: '1px solid var(--border)', color: 'var(--muted)' }}>
             ยกเลิก
           </Link>

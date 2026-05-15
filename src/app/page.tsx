@@ -76,10 +76,10 @@ export default function DashboardPage() {
                   <Link
                     key={p.id}
                     href={`/products/${p.id}`}
-                    className="flex items-center justify-between p-3 rounded-lg transition-colors hover:opacity-80"
+                    className="flex items-center justify-between gap-2 p-3 rounded-lg transition-colors hover:opacity-80"
                   >
-                    <span className="text-sm font-medium" style={{ color: 'var(--primary)' }}>{p.name}</span>
-                    <span className={`text-sm font-bold ${p.current_stock === 0 ? 'text-red-600' : 'text-yellow-600'}`}>
+                    <span className="text-sm font-medium truncate min-w-0" style={{ color: 'var(--primary)' }}>{p.name}</span>
+                    <span className={`text-sm font-bold shrink-0 ${p.current_stock === 0 ? 'text-red-600' : 'text-yellow-600'}`}>
                       {p.current_stock} {p.unit}
                     </span>
                   </Link>
@@ -98,19 +98,19 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-2">
               {recentMovements.map(m => (
-                <div key={m.id} className="flex items-center justify-between p-3 rounded-lg hover:opacity-80">
-                  <div className="flex items-center gap-3">
+                <div key={m.id} className="flex items-center justify-between gap-2 p-3 rounded-lg hover:opacity-80">
+                  <div className="flex items-center gap-3 min-w-0">
                     {m.type === 'in' ? (
                       <ArrowDownCircle size={16} className="text-green-500 shrink-0" />
                     ) : (
                       <ArrowUpCircle size={16} className="text-red-500 shrink-0" />
                     )}
-                    <div>
-                      <p className="text-sm font-medium" style={{ color: 'var(--primary)' }}>{m.products?.name}</p>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate" style={{ color: 'var(--primary)' }}>{m.products?.name}</p>
                       <p className="text-xs" style={{ color: 'var(--muted)' }}>{new Date(m.created_at).toLocaleString('th-TH')}</p>
                     </div>
                   </div>
-                  <span className={`text-sm font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
+                  <span className={`text-sm font-bold shrink-0 ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
                     {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
                   </span>
                 </div>

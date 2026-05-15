@@ -37,22 +37,24 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link href="/products" className="transition-colors" style={{ color: 'var(--muted)' }}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/products" className="transition-colors shrink-0" style={{ color: 'var(--muted)' }}>
             <ArrowLeft size={20} />
           </Link>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>{product.name}</h1>
+          <h1 className="text-xl md:text-2xl font-bold truncate" style={{ color: 'var(--primary)' }}>{product.name}</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Link href={`/products/${id}/edit`}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
             style={{ border: '1px solid var(--border)', color: 'var(--foreground)' }}>
-            <Edit size={15} /> แก้ไข
+            <Edit size={15} />
+            <span className="hidden sm:inline">แก้ไข</span>
           </Link>
           <button onClick={handleDelete}
-            className="flex items-center gap-2 border border-red-200 hover:bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-            <Trash2 size={15} /> ลบ
+            className="flex items-center gap-1.5 border border-red-200 hover:bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+            <Trash2 size={15} />
+            <span className="hidden sm:inline">ลบ</span>
           </button>
         </div>
       </div>
@@ -105,20 +107,20 @@ export default function ProductDetailPage() {
         ) : (
           <div className="space-y-2">
             {movements.map(m => (
-              <div key={m.id} className="flex items-center justify-between p-3 rounded-lg hover:opacity-80">
-                <div className="flex items-center gap-3">
+              <div key={m.id} className="flex items-center justify-between gap-2 p-3 rounded-lg hover:opacity-80">
+                <div className="flex items-center gap-3 min-w-0">
                   {m.type === 'in' ? (
                     <ArrowDownCircle size={18} className="text-green-500 shrink-0" />
                   ) : (
                     <ArrowUpCircle size={18} className="text-red-500 shrink-0" />
                   )}
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>{m.type === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}</p>
                     <p className="text-xs" style={{ color: 'var(--muted)' }}>{new Date(m.created_at).toLocaleString('th-TH')}</p>
-                    {m.note && <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{m.note}</p>}
+                    {m.note && <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--muted)' }}>{m.note}</p>}
                   </div>
                 </div>
-                <span className={`text-sm font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`text-sm font-bold shrink-0 ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
                   {m.type === 'in' ? '+' : '-'}{m.quantity} {product.unit}
                 </span>
               </div>

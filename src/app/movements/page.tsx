@@ -33,13 +33,13 @@ export default function MovementsPage() {
         </div>
         <Link
           href="/movements/new"
-          className="flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 text-white px-3 py-2.5 sm:px-4 rounded-lg text-sm font-medium transition-colors"
           style={{ background: 'var(--primary)' }}
           onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
           onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
         >
           <Plus size={16} />
-          บันทึกรับ/จ่าย
+          <span className="hidden sm:inline">บันทึกรับ/จ่าย</span>
         </Link>
       </div>
 
@@ -66,53 +66,97 @@ export default function MovementsPage() {
           <p>ไม่มีรายการ</p>
         </div>
       ) : (
-        <div className="rounded-xl overflow-hidden" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
-          <table className="w-full text-sm">
-            <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
-              <tr>
-                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ประเภท</th>
-                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ทรัพยากร</th>
-                <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>จำนวน</th>
-                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ผู้เบิก</th>
-                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมายเหตุ</th>
-                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>วันที่/เวลา</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(m => (
-                <tr key={m.id} className="transition-colors" style={{ borderBottom: '1px solid var(--border)' }}
-                  onMouseOver={e => (e.currentTarget.style.background = 'var(--background)')}
-                  onMouseOut={e => (e.currentTarget.style.background = '')}>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      {m.type === 'in' ? (
-                        <ArrowDownCircle size={16} className="text-green-500" />
-                      ) : (
-                        <ArrowUpCircle size={16} className="text-red-500" />
-                      )}
-                      <span className={`font-medium ${m.type === 'in' ? 'text-green-700' : 'text-red-700'}`}>
+        <>
+          {/* Mobile card list — visible below md */}
+          <div className="md:hidden space-y-3">
+            {filtered.map(m => (
+              <div
+                key={m.id}
+                className="p-4 rounded-xl"
+                style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    {m.type === 'in' ? (
+                      <ArrowDownCircle size={18} className="text-green-500 shrink-0" />
+                    ) : (
+                      <ArrowUpCircle size={18} className="text-red-500 shrink-0" />
+                    )}
+                    <div className="min-w-0">
+                      <Link
+                        href={`/products/${m.product_id}`}
+                        className="font-medium text-sm truncate block"
+                        style={{ color: 'var(--primary)' }}
+                      >
+                        {m.products?.name}
+                      </Link>
+                      <span className={`text-xs font-medium ${m.type === 'in' ? 'text-green-700' : 'text-red-700'}`}>
                         {m.type === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}
                       </span>
                     </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link href={`/products/${m.product_id}`} className="font-medium" style={{ color: 'var(--primary)' }}>
-                      {m.products?.name}
-                    </Link>
-                  </td>
-                  <td className={`px-4 py-3 text-right font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
+                  </div>
+                  <span className={`text-sm font-bold shrink-0 ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
                     {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
-                  </td>
-                  <td className="px-4 py-3" style={{ color: 'var(--foreground)' }}>{m.requester ?? '-'}</td>
-                  <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{m.note ?? '-'}</td>
-                  <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--muted)' }}>
-                    {new Date(m.created_at).toLocaleString('th-TH')}
-                  </td>
+                  </span>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: 'var(--muted)' }}>
+                  {m.requester && <span>ผู้เบิก: {m.requester}</span>}
+                  {m.note && <span>หมายเหตุ: {m.note}</span>}
+                  <span>{new Date(m.created_at).toLocaleString('th-TH')}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop table — visible from md up */}
+          <div className="hidden md:block rounded-xl overflow-x-auto" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+            <table className="w-full text-sm">
+              <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
+                <tr>
+                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ประเภท</th>
+                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ทรัพยากร</th>
+                  <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>จำนวน</th>
+                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ผู้เบิก</th>
+                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมายเหตุ</th>
+                  <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>วันที่/เวลา</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filtered.map(m => (
+                  <tr key={m.id} className="transition-colors" style={{ borderBottom: '1px solid var(--border)' }}
+                    onMouseOver={e => (e.currentTarget.style.background = 'var(--background)')}
+                    onMouseOut={e => (e.currentTarget.style.background = '')}>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        {m.type === 'in' ? (
+                          <ArrowDownCircle size={16} className="text-green-500" />
+                        ) : (
+                          <ArrowUpCircle size={16} className="text-red-500" />
+                        )}
+                        <span className={`font-medium ${m.type === 'in' ? 'text-green-700' : 'text-red-700'}`}>
+                          {m.type === 'in' ? 'รับทรัพยากร' : 'จ่ายทรัพยากร'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link href={`/products/${m.product_id}`} className="font-medium" style={{ color: 'var(--primary)' }}>
+                        {m.products?.name}
+                      </Link>
+                    </td>
+                    <td className={`px-4 py-3 text-right font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
+                      {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
+                    </td>
+                    <td className="px-4 py-3" style={{ color: 'var(--foreground)' }}>{m.requester ?? '-'}</td>
+                    <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{m.note ?? '-'}</td>
+                    <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--muted)' }}>
+                      {new Date(m.created_at).toLocaleString('th-TH')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   )
