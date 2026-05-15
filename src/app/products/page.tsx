@@ -26,18 +26,21 @@ export default function ProductsPage() {
     (p.sku ?? '').toLowerCase().includes(search.toLowerCase())
   )
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-gray-400">กำลังโหลด...</div>
+  if (loading) return <div className="flex items-center justify-center h-64" style={{ color: 'var(--muted)' }}>กำลังโหลด...</div>
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-blue-600/100 dark:text-sky-400/100">สินค้าทั้งหมด</h1>
-          <p className="text-gray-500 mt-1">{products.length} รายการ</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>สินค้าทั้งหมด</h1>
+          <p className="mt-1" style={{ color: 'var(--muted)' }}>{products.length} รายการ</p>
         </div>
         <Link
           href="/products/new"
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          style={{ background: 'var(--primary)' }}
+          onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
+          onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
         >
           <Plus size={16} />
           เพิ่มสินค้า
@@ -45,46 +48,49 @@ export default function ProductsPage() {
       </div>
 
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--muted)' }} />
         <input
           type="text"
           placeholder="ค้นหาชื่อสินค้า หรือ SKU..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          className="w-full pl-9 pr-4 py-2.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+          style={{ border: '1px solid var(--border)', background: 'var(--card)' }}
         />
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 text-gray-400 gap-3">
+        <div className="flex flex-col items-center justify-center h-64 gap-3" style={{ color: 'var(--muted)' }}>
           <Package size={40} />
           <p>ไม่พบสินค้า</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="rounded-xl overflow-hidden" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
               <tr>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">สินค้า</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">หมวดหมู่</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-600">คงเหลือ</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-600">ราคา</th>
-                <th className="text-center px-4 py-3 font-medium text-gray-600">สถานะ</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>สินค้า</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมวดหมู่</th>
+                <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>คงเหลือ</th>
+                <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ราคา</th>
+                <th className="text-center px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>สถานะ</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody style={{ borderTop: '1px solid var(--border)' }}>
               {filtered.map(p => (
-                <tr key={p.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={p.id} className="transition-colors" style={{ borderBottom: '1px solid var(--border)' }}
+                  onMouseOver={e => (e.currentTarget.style.background = 'var(--background)')}
+                  onMouseOut={e => (e.currentTarget.style.background = '')}>
                   <td className="px-4 py-3">
-                    <div className="font-medium text-blue-600/100 dark:text-sky-400/100">{p.name}</div>
-                    {p.sku && <div className="text-xs text-gray-400">SKU: {p.sku}</div>}
+                    <div className="font-medium" style={{ color: 'var(--foreground)' }}>{p.name}</div>
+                    {p.sku && <div className="text-xs" style={{ color: 'var(--muted)' }}>SKU: {p.sku}</div>}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{p.categories?.name ?? '-'}</td>
-                  <td className="px-4 py-3 text-right font-medium text-blue-600/100 dark:text-sky-400/100">
+                  <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{p.categories?.name ?? '-'}</td>
+                  <td className="px-4 py-3 text-right font-medium" style={{ color: 'var(--foreground)' }}>
                     {p.current_stock} {p.unit}
                   </td>
-                  <td className="px-4 py-3 text-right text-gray-600">
+                  <td className="px-4 py-3 text-right" style={{ color: 'var(--muted)' }}>
                     {p.price > 0 ? `฿${p.price.toLocaleString()}` : '-'}
                   </td>
                   <td className="px-4 py-3 text-center">
@@ -93,7 +99,8 @@ export default function ProductsPage() {
                   <td className="px-4 py-3 text-right">
                     <Link
                       href={`/products/${p.id}`}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
+                      className="font-medium"
+                      style={{ color: 'var(--primary)' }}
                     >
                       ดูรายละเอียด
                     </Link>

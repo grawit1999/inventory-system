@@ -22,18 +22,21 @@ export default function MovementsPage() {
 
   const filtered = filter === 'all' ? movements : movements.filter(m => m.type === filter)
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-gray-400">กำลังโหลด...</div>
+  if (loading) return <div className="flex items-center justify-center h-64" style={{ color: 'var(--muted)' }}>กำลังโหลด...</div>
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-blue-600/100 dark:text-sky-400/100">รับ/จ่ายสินค้า</h1>
-          <p className="text-gray-500 mt-1">ประวัติการเคลื่อนไหวสินค้าทั้งหมด</p>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>รับ/จ่ายสินค้า</h1>
+          <p className="mt-1" style={{ color: 'var(--muted)' }}>ประวัติการเคลื่อนไหวสินค้าทั้งหมด</p>
         </div>
         <Link
           href="/movements/new"
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="flex items-center gap-2 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          style={{ background: 'var(--primary)' }}
+          onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
+          onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
         >
           <Plus size={16} />
           บันทึกรับ/จ่าย
@@ -45,9 +48,12 @@ export default function MovementsPage() {
           <button
             key={t}
             onClick={() => setFilter(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === t ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
-            }`}
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            style={
+              filter === t
+                ? { background: 'var(--primary)', color: '#fff' }
+                : { background: 'var(--card)', border: '1px solid var(--border)', color: 'var(--muted)' }
+            }
           >
             {t === 'all' ? 'ทั้งหมด' : t === 'in' ? 'รับสินค้า' : 'จ่ายสินค้า'}
           </button>
@@ -55,26 +61,28 @@ export default function MovementsPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 text-gray-400 gap-3">
+        <div className="flex flex-col items-center justify-center h-64 gap-3" style={{ color: 'var(--muted)' }}>
           <ArrowLeftRight size={40} />
           <p>ไม่มีรายการ</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="rounded-xl overflow-hidden" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead style={{ background: 'var(--background)', borderBottom: '1px solid var(--border)' }}>
               <tr>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">ประเภท</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">สินค้า</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-600">จำนวน</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">ผู้เบิก</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">หมายเหตุ</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">วันที่/เวลา</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ประเภท</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>สินค้า</th>
+                <th className="text-right px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>จำนวน</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>ผู้เบิก</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>หมายเหตุ</th>
+                <th className="text-left px-4 py-3 font-medium" style={{ color: 'var(--muted)' }}>วันที่/เวลา</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               {filtered.map(m => (
-                <tr key={m.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={m.id} className="transition-colors" style={{ borderBottom: '1px solid var(--border)' }}
+                  onMouseOver={e => (e.currentTarget.style.background = 'var(--background)')}
+                  onMouseOut={e => (e.currentTarget.style.background = '')}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       {m.type === 'in' ? (
@@ -88,16 +96,16 @@ export default function MovementsPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <Link href={`/products/${m.product_id}`} className="font-medium text-blue-600/100 dark:text-sky-400/100 hover:text-blue-600">
+                    <Link href={`/products/${m.product_id}`} className="font-medium" style={{ color: 'var(--primary)' }}>
                       {m.products?.name}
                     </Link>
                   </td>
                   <td className={`px-4 py-3 text-right font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
                     {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
                   </td>
-                  <td className="px-4 py-3 text-gray-700">{m.requester ?? '-'}</td>
-                  <td className="px-4 py-3 text-gray-500">{m.note ?? '-'}</td>
-                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                  <td className="px-4 py-3" style={{ color: 'var(--foreground)' }}>{m.requester ?? '-'}</td>
+                  <td className="px-4 py-3" style={{ color: 'var(--muted)' }}>{m.note ?? '-'}</td>
+                  <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--muted)' }}>
                     {new Date(m.created_at).toLocaleString('th-TH')}
                   </td>
                 </tr>

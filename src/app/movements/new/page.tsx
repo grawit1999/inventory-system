@@ -66,19 +66,24 @@ function NewMovementForm() {
     else alert('เกิดข้อผิดพลาด: ' + error.message)
   }
 
+  const inputClass = "w-full rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+  const inputStyle = { border: '1px solid var(--border)', background: 'var(--card)' }
+  const labelClass = "block text-sm font-medium mb-1"
+  const labelStyle = { color: 'var(--foreground)' }
+
   return (
     <div className="max-w-lg mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/movements" className="text-gray-400 hover:text-gray-600 transition-colors">
+        <Link href="/movements" className="transition-colors" style={{ color: 'var(--muted)' }}>
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="text-2xl font-bold text-gray-900">บันทึกรับ/จ่ายสินค้า</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--foreground)' }}>บันทึกรับ/จ่ายสินค้า</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+      <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-5" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
         {/* Type selector */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">ประเภท <span className="text-red-500">*</span></label>
+          <label className={labelClass} style={labelStyle}>ประเภท <span className="text-red-500">*</span></label>
           <div className="grid grid-cols-2 gap-3">
             {(['in', 'out'] as const).map(t => (
               <button
@@ -90,8 +95,9 @@ function NewMovementForm() {
                     ? t === 'in'
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : 'border-red-500 bg-red-50 text-red-700'
-                    : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                    : 'text-gray-500 hover:border-gray-300'
                 }`}
+                style={form.type !== t ? { borderColor: 'var(--border)', color: 'var(--muted)' } : {}}
               >
                 {t === 'in' ? <ArrowDownCircle size={18} /> : <ArrowUpCircle size={18} />}
                 {t === 'in' ? 'รับสินค้า' : 'จ่ายสินค้า'}
@@ -102,12 +108,13 @@ function NewMovementForm() {
 
         {/* Product selector */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">สินค้า <span className="text-red-500">*</span></label>
+          <label className={labelClass} style={labelStyle}>สินค้า <span className="text-red-500">*</span></label>
           <select
             required
             value={form.product_id}
             onChange={e => handleProductChange(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className={inputClass}
+            style={inputStyle}
           >
             <option value="">-- เลือกสินค้า --</option>
             {products.map(p => (
@@ -120,7 +127,7 @@ function NewMovementForm() {
 
         {/* Quantity */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className={labelClass} style={labelStyle}>
             จำนวน {selectedProduct && `(${selectedProduct.unit})`} <span className="text-red-500">*</span>
           </label>
           <input
@@ -129,23 +136,25 @@ function NewMovementForm() {
             min="1"
             value={form.quantity}
             onChange={e => set('quantity', e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
+            style={inputStyle}
             placeholder="0"
           />
           {form.type === 'out' && selectedProduct && (
-            <p className="text-xs text-gray-400 mt-1">คงเหลือ: {selectedProduct.current_stock} {selectedProduct.unit}</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>คงเหลือ: {selectedProduct.current_stock} {selectedProduct.unit}</p>
           )}
         </div>
 
         {/* Requester — แสดงเฉพาะตอนจ่ายสินค้า */}
         {form.type === 'out' && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ผู้เบิก</label>
+            <label className={labelClass} style={labelStyle}>ผู้เบิก</label>
             {members.length > 0 ? (
               <select
                 value={form.requester}
                 onChange={e => set('requester', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                className={inputClass}
+                style={inputStyle}
               >
                 <option value="">-- เลือกผู้เบิก --</option>
                 {members.map(m => (
@@ -156,7 +165,8 @@ function NewMovementForm() {
               <input
                 value={form.requester}
                 onChange={e => set('requester', e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={inputClass}
+                style={inputStyle}
                 placeholder="ชื่อผู้เบิก"
               />
             )}
@@ -165,11 +175,12 @@ function NewMovementForm() {
 
         {/* Note */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">หมายเหตุ</label>
+          <label className={labelClass} style={labelStyle}>หมายเหตุ</label>
           <input
             value={form.note}
             onChange={e => set('note', e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={inputClass}
+            style={inputStyle}
             placeholder="เช่น ซื้อจากผู้จัดส่ง / ขายลูกค้า"
           />
         </div>
@@ -185,7 +196,8 @@ function NewMovementForm() {
             {saving ? 'กำลังบันทึก...' : form.type === 'in' ? 'บันทึกรับสินค้า' : 'บันทึกจ่ายสินค้า'}
           </button>
           <Link href="/movements"
-            className="px-6 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors text-center">
+            className="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors text-center"
+            style={{ border: '1px solid var(--border)', color: 'var(--muted)' }}>
             ยกเลิก
           </Link>
         </div>
@@ -196,7 +208,7 @@ function NewMovementForm() {
 
 export default function NewMovementPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-64 text-gray-400">กำลังโหลด...</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center h-64" style={{ color: 'var(--muted)' }}>กำลังโหลด...</div>}>
       <NewMovementForm />
     </Suspense>
   )
