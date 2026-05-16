@@ -3,11 +3,13 @@ import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { supabase, StockMovement } from '@/lib/supabase'
 import { Plus, ArrowDownCircle, ArrowUpCircle, ArrowLeftRight, Trash2, X, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react'
+import { useAuth } from '@/lib/auth'
 
 type SortKey = 'product' | 'quantity' | 'created_at'
 type SortDir = 'asc' | 'desc'
 
 export default function MovementsPage() {
+  const { isLoggedIn } = useAuth()
   const [movements, setMovements] = useState<StockMovement[]>([])
   const [typeFilter, setTypeFilter] = useState<'all' | 'in' | 'out'>('all')
   const [productFilter, setProductFilter] = useState('')
@@ -89,16 +91,18 @@ export default function MovementsPage() {
           <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>รับ/จ่ายทรัพยากร</h1>
           <p className="mt-1" style={{ color: 'var(--muted)' }}>ประวัติการเคลื่อนไหวทรัพยากรทั้งหมด</p>
         </div>
-        <Link
-          href="/movements/new"
-          className="flex items-center gap-2 text-white px-3 py-2.5 sm:px-4 rounded-lg text-sm font-medium transition-colors"
-          style={{ background: 'var(--primary)' }}
-          onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
-        >
-          <Plus size={16} />
-          <span className="hidden sm:inline">บันทึกรับ/จ่าย</span>
-        </Link>
+        {isLoggedIn && (
+          <Link
+            href="/movements/new"
+            className="flex items-center gap-2 text-white px-3 py-2.5 sm:px-4 rounded-lg text-sm font-medium transition-colors"
+            style={{ background: 'var(--primary)' }}
+            onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
+            onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
+          >
+            <Plus size={16} />
+            <span className="hidden sm:inline">บันทึกรับ/จ่าย</span>
+          </Link>
+        )}
       </div>
 
       {/* Filter bar */}
@@ -201,9 +205,11 @@ export default function MovementsPage() {
                     <span className={`text-sm font-bold ${m.type === 'in' ? 'text-green-600' : 'text-red-600'}`}>
                       {m.type === 'in' ? '+' : '-'}{m.quantity} {m.products?.unit}
                     </span>
-                    <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
-                      <Trash2 size={15} />
-                    </button>
+                    {isLoggedIn && (
+                      <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                        <Trash2 size={15} />
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: 'var(--muted)' }}>
@@ -272,9 +278,11 @@ export default function MovementsPage() {
                       {new Date(m.created_at).toLocaleString('th-TH')}
                     </td>
                     <td className="px-4 py-3">
-                      <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
-                        <Trash2 size={15} />
-                      </button>
+                      {isLoggedIn && (
+                        <button onClick={() => handleDelete(m.id)} className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
+                          <Trash2 size={15} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

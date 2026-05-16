@@ -5,10 +5,12 @@ import Link from 'next/link'
 import { supabase, Product, StockMovement } from '@/lib/supabase'
 import StockBadge from '@/components/StockBadge'
 import { ArrowLeft, Edit, Trash2, ArrowDownCircle, ArrowUpCircle } from 'lucide-react'
+import { useAuth } from '@/lib/auth'
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const { isLoggedIn } = useAuth()
   const [product, setProduct] = useState<Product | null>(null)
   const [movements, setMovements] = useState<StockMovement[]>([])
   const [loading, setLoading] = useState(true)
@@ -44,19 +46,21 @@ export default function ProductDetailPage() {
           </Link>
           <h1 className="text-xl md:text-2xl font-bold truncate" style={{ color: 'var(--primary)' }}>{product.name}</h1>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Link href={`/products/${id}/edit`}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-            style={{ border: '1px solid var(--border)', color: 'var(--foreground)' }}>
-            <Edit size={15} />
-            <span className="hidden sm:inline">แก้ไข</span>
-          </Link>
-          <button onClick={handleDelete}
-            className="flex items-center gap-1.5 border border-red-200 hover:bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-            <Trash2 size={15} />
-            <span className="hidden sm:inline">ลบ</span>
-          </button>
-        </div>
+        {isLoggedIn && (
+          <div className="flex items-center gap-2 shrink-0">
+            <Link href={`/products/${id}/edit`}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+              style={{ border: '1px solid var(--border)', color: 'var(--foreground)' }}>
+              <Edit size={15} />
+              <span className="hidden sm:inline">แก้ไข</span>
+            </Link>
+            <button onClick={handleDelete}
+              className="flex items-center gap-1.5 border border-red-200 hover:bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
+              <Trash2 size={15} />
+              <span className="hidden sm:inline">ลบ</span>
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
@@ -64,10 +68,7 @@ export default function ProductDetailPage() {
           <h2 className="font-semibold" style={{ color: 'var(--primary)' }}>ข้อมูลทรัพยากร</h2>
           <dl className="space-y-3 text-sm">
             {[
-              ['SKU', product.sku ?? '-'],
-              ['หมวดหมู่', product.categories?.name ?? '-'],
               ['หน่วย', product.unit],
-              ['ราคาต่อหน่วย', product.price > 0 ? `฿${product.price.toLocaleString()}` : '-'],
               ['สต็อกขั้นต่ำ', `${product.min_stock} ${product.unit}`],
             ].map(([label, value]) => (
               <div key={label} className="flex justify-between">
@@ -88,15 +89,17 @@ export default function ProductDetailPage() {
           <div className="text-5xl font-bold" style={{ color: 'var(--primary)' }}>{product.current_stock}</div>
           <div style={{ color: 'var(--muted)' }}>{product.unit}</div>
           <StockBadge current={product.current_stock} min={product.min_stock} />
-          <Link
-            href={`/movements/new?product=${id}`}
-            className="mt-2 w-full text-center text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
-            style={{ background: 'var(--primary)' }}
-            onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
-            onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
-          >
-            บันทึกรับ/จ่ายทรัพยากร
-          </Link>
+          {isLoggedIn && (
+            <Link
+              href={`/movements/new?product=${id}`}
+              className="mt-2 w-full text-center text-white py-2.5 rounded-lg text-sm font-medium transition-colors"
+              style={{ background: 'var(--primary)' }}
+              onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
+              onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
+            >
+              บันทึกรับ/จ่ายทรัพยากร
+            </Link>
+          )}
         </div>
       </div>
 

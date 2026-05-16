@@ -2,8 +2,10 @@
 import { useEffect, useState } from 'react'
 import { supabase, Member } from '@/lib/supabase'
 import { Plus, Trash2, Users, Pencil, X, Check } from 'lucide-react'
+import { useAuth } from '@/lib/auth'
 
 export default function MembersPage() {
+  const { isLoggedIn } = useAuth()
   const [members, setMembers] = useState<Member[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -80,16 +82,18 @@ export default function MembersPage() {
           <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>สมาชิก</h1>
           <p className="mt-1" style={{ color: 'var(--muted)' }}>{members.length} คน</p>
         </div>
-        <button
-          onClick={() => setShowForm(f => !f)}
-          className="flex items-center gap-2 text-white px-3 py-2.5 sm:px-4 rounded-lg text-sm font-medium transition-colors"
-          style={{ background: 'var(--primary)' }}
-          onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
-        >
-          <Plus size={16} />
-          <span className="hidden sm:inline">เพิ่มสมาชิก</span>
-        </button>
+        {isLoggedIn && (
+          <button
+            onClick={() => setShowForm(f => !f)}
+            className="flex items-center gap-2 text-white px-3 py-2.5 sm:px-4 rounded-lg text-sm font-medium transition-colors"
+            style={{ background: 'var(--primary)' }}
+            onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
+            onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
+          >
+            <Plus size={16} />
+            <span className="hidden sm:inline">เพิ่มสมาชิก</span>
+          </button>
+        )}
       </div>
 
       {/* Add form */}
@@ -171,7 +175,7 @@ export default function MembersPage() {
               )}
 
               {/* Actions */}
-              {editId !== m.id && (
+              {isLoggedIn && editId !== m.id && (
                 <div className="flex items-center gap-1 shrink-0">
                   <button onClick={() => startEdit(m)} className="p-1.5 rounded-lg hover:bg-amber-50 transition-colors" style={{ color: 'var(--muted)' }}>
                     <Pencil size={14} />

@@ -4,11 +4,13 @@ import Link from 'next/link'
 import { supabase, Product } from '@/lib/supabase'
 import StockBadge from '@/components/StockBadge'
 import { Plus, Search, Package, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react'
+import { useAuth } from '@/lib/auth'
 
 type SortKey = 'name' | 'current_stock'
 type SortDir = 'asc' | 'desc'
 
 export default function ProductsPage() {
+  const { isLoggedIn } = useAuth()
   const [products, setProducts] = useState<Product[]>([])
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('name')
@@ -55,16 +57,18 @@ export default function ProductsPage() {
           <h1 className="text-2xl font-bold" style={{ color: 'var(--primary)' }}>ทรัพยากรทั้งหมด</h1>
           <p className="mt-1" style={{ color: 'var(--muted)' }}>{products.length} รายการ</p>
         </div>
-        <Link
-          href="/products/new"
-          className="flex items-center gap-2 text-white px-3 py-2.5 sm:px-4 rounded-lg text-sm font-medium transition-colors"
-          style={{ background: 'var(--primary)' }}
-          onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
-          onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
-        >
-          <Plus size={16} />
-          <span className="hidden sm:inline">เพิ่มทรัพยากร</span>
-        </Link>
+        {isLoggedIn && (
+          <Link
+            href="/products/new"
+            className="flex items-center gap-2 text-white px-3 py-2.5 sm:px-4 rounded-lg text-sm font-medium transition-colors"
+            style={{ background: 'var(--primary)' }}
+            onMouseOver={e => (e.currentTarget.style.background = 'var(--primary-hover)')}
+            onMouseOut={e => (e.currentTarget.style.background = 'var(--primary)')}
+          >
+            <Plus size={16} />
+            <span className="hidden sm:inline">เพิ่มทรัพยากร</span>
+          </Link>
+        )}
       </div>
 
       <div className="relative">
