@@ -2,12 +2,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Package, ArrowLeftRight, LayoutDashboard } from 'lucide-react'
+import { Package, ArrowLeftRight, LayoutDashboard, Users } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: 'ภาพรวม', icon: LayoutDashboard },
   { href: '/products', label: 'ทรัพยากร', icon: Package },
   { href: '/movements', label: 'รับ/จ่าย', icon: ArrowLeftRight },
+  { href: '/members', label: 'สมาชิก', icon: Users },
 ]
 
 export default function Navbar() {
