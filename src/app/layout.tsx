@@ -7,7 +7,7 @@ import { AuthProvider } from '@/lib/auth'
 const geist = Geist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'คลัง JOMZON',
+  title: 'JOMZON',
   description: 'Inventory Management System',
   icons: { icon: '/Logo_JZ.png' },
 }
