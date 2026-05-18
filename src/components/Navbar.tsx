@@ -45,7 +45,7 @@ export default function Navbar() {
             {/* Brand */}
             <Link href="/" className="flex items-center gap-2">
               <Image src="/Logo_JZ.png" alt="JOMZON Logo" width={40} height={40} className="rounded-lg object-contain" />
-              <span className="font-bold text-base md:text-lg" style={{ color: 'var(--primary)' }}>คลัง JOMZON</span>
+              <span className="font-bold text-base md:text-lg" style={{ color: 'var(--primary)' }}>JOMZON</span>
             </Link>
 
             <div className="flex items-center gap-2">
